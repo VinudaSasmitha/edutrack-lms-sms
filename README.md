@@ -117,25 +117,7 @@ Each member is responsible for **frontend, backend, and Firebase integration** w
 
 ## 📂 Project Structure
 
-edutrack-lms-sms/
-│
-├── frontend/
-│ ├── css/
-│ ├── js/
-│ ├── pages/
-│ └── index.html
-│
-├── backend/
-│ ├── routes/
-│ ├── controllers/
-│ ├── server.js
-│
-├── firebase/
-│ ├── firebaseConfig.js
-│ ├── firestore.rules
-│
-├── package.json
-└── README.md
+
 
 
 
