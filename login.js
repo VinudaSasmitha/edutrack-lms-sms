@@ -63,3 +63,46 @@ const setLoading = (isLoading) => {
         ui.loginBtn.innerText = "Log In";
     }
 };
+
+/* -----------------------------
+       Display error with animation
+       ----------------------------- */
+const displayError = (message) => {
+    ui.errorMsg.innerText = message;             // Show error text
+    ui.loginCard.classList.remove("shake");     // Reset animation
+    void ui.loginCard.offsetWidth;              // Force reflow
+    ui.loginCard.classList.add("shake");        // Shake card
+};
+
+/* -----------------------------
+   Toggle password visibility
+   ----------------------------- */
+const togglePassword = () => {
+    const type =
+        ui.password.getAttribute("type") === "password"
+            ? "text"
+            : "password";
+
+    ui.password.setAttribute("type", type);      // Change input type
+    ui.eyeIcon.style.opacity = type === "text" ? "0.5" : "1";
+};
+
+/* ------------------------------------------------
+   Check user role & redirect to correct dashboard
+   ------------------------------------------------ */
+const checkUserRoleAndRedirect = async (user) => {
+    try {
+        /* ---- 1. Check users collection (Admin / Student) ---- */
+        let docRef = doc(db, "users", user.uid);
+        let docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const role = docSnap.data().role;
+
+            if (role === "admin") {
+                window.location.href = "admin-home.html";
+            } else {
+                window.location.href = "student-dashboard.html";
+            }
+            return;
+        }
