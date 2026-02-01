@@ -61,3 +61,24 @@ body {
         transform: rotate(360deg);
     }
 }
+
+/* --- LOGIN CARD CONTAINER --- */
+.login-card {
+    background: var(--white);
+    width: 900px;
+    height: 550px;
+    display: flex;
+    border-radius: 20px;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    animation: slideIn 0.8s ease-out;
+}
+
+/* --- LEFT SIDE: IMAGE --- */
+.image-side {
+    flex: 1.2;
+    background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1471&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
