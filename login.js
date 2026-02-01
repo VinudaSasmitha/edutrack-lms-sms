@@ -217,3 +217,23 @@ const handleGoogleLogin = async () => {
         displayError("Google Sign-In failed.");
     }
 };
+
+/* -----------------------------
+       Event listeners
+       ----------------------------- */
+document.addEventListener("DOMContentLoaded", () => {
+    ui.toggleBtn.addEventListener("click", togglePassword);
+    ui.loginBtn.addEventListener("click", handleLogin);
+    ui.googleBtn.addEventListener("click", handleGoogleLogin);
+
+    // Press Enter to login
+    document.addEventListener("keydown", (e) => {
+        if (
+            e.key === "Enter" &&
+            (document.activeElement === ui.email ||
+                document.activeElement === ui.password)
+        ) {
+            handleLogin();
+        }
+    });
+});
