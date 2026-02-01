@@ -179,9 +179,7 @@ const handleLogin = async () => {
     }
 };
 
-/* -----------------------------
-       Google Sign-In login
-       ----------------------------- */
+/* Google Sign-In login */
 const handleGoogleLogin = async () => {
     if (isSubmitting) return;
 
@@ -195,3 +193,27 @@ const handleGoogleLogin = async () => {
         // Google popup login
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
+
+        // Check if user already exists
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        // If new user → create student profile
+        if (!docSnap.exists()) {
+            await setDoc(docRef, {
+                email: user.email,
+                role: "student",
+                createdAt: serverTimestamp(),
+                method: "google"
+            });
+        }
+
+        await checkUserRoleAndRedirect(user);
+
+    } catch (error) {
+        console.error("Google Auth Error:", error);
+        setLoading(false);
+        isSubmitting = false;
+        displayError("Google Sign-In failed.");
+    }
+};
