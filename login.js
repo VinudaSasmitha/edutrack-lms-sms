@@ -45,3 +45,21 @@ const ui = {
     toggleBtn: document.getElementById("toggleBtn"),   // Show/Hide password button
     eyeIcon: document.getElementById("eyeIcon")        // Eye icon
 };
+
+// Prevent multiple submissions
+let isSubmitting = false;
+
+/*Show / hide loading state */
+const setLoading = (isLoading) => {
+    if (isLoading) {
+        ui.loader.classList.add("active");      // Show loader
+        ui.loginBtn.disabled = true;            // Disable buttons
+        ui.googleBtn.disabled = true;
+        ui.loginBtn.innerText = "Authenticating...";
+    } else {
+        ui.loader.classList.remove("active");   // Hide loader
+        ui.loginBtn.disabled = false;
+        ui.googleBtn.disabled = false;
+        ui.loginBtn.innerText = "Log In";
+    }
+};
