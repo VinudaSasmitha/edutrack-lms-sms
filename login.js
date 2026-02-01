@@ -31,3 +31,19 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig); // Initialize app
 const auth = getAuth(app);                // Firebase Authentication
 const db = getFirestore(app);             // Firestore Database
+
+
+/* -----------------------------
+      Get DOM elements
+      ----------------------------- */
+const ui = {
+    email: document.getElementById("email"),           // Email input
+    password: document.getElementById("password"),     // Password input
+    loginBtn: document.getElementById("loginBtn"),     // Login button
+    googleBtn: document.getElementById("googleBtn"),   // Google login button
+    errorMsg: document.getElementById("errorMsg"),     // Error message area
+    loginCard: document.getElementById("loginCard"),   // Login card (for animation)
+    loader: document.getElementById("loader"),         // Loading spinner
+    toggleBtn: document.getElementById("toggleBtn"),   // Show/Hide password button
+    eyeIcon: document.getElementById("eyeIcon")        // Eye icon
+};
