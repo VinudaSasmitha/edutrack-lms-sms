@@ -126,3 +126,55 @@ const checkUserRoleAndRedirect = async (user) => {
         isSubmitting = false;
     }
 };
+
+
+/* -----------------------------
+       Email & Password login
+       ----------------------------- */
+const handleLogin = async () => {
+    if (isSubmitting) return;
+
+    const email = ui.email.value.trim();
+    const password = ui.password.value;
+
+    ui.errorMsg.innerText = "";
+
+    // Validate inputs
+    if (!email || !password) {
+        displayError("Please enter both email and password.");
+        return;
+    }
+
+    isSubmitting = true;
+    setLoading(true);
+
+    try {
+        // Keep user logged in after refresh
+        await setPersistence(auth, browserLocalPersistence);
+
+        // Firebase sign-in
+        const userCredential =
+            await signInWithEmailAndPassword(auth, email, password);
+
+        // Redirect based on role
+        await checkUserRoleAndRedirect(userCredential.user);
+
+    } catch (error) {
+        console.error("Login Error:", error.code);
+
+        // Friendly error messages
+        const errorMap = {
+            "auth/invalid-credential": "Invalid email or password.",
+            "auth/user-not-found": "No account found with this email.",
+            "auth/wrong-password": "Incorrect password.",
+            "auth/too-many-requests": "Too many failed attempts. Try later."
+        };
+
+        displayError(
+            errorMap[error.code] || "Login failed. Check your connection."
+        );
+
+        setLoading(false);
+        isSubmitting = false;
+    }
+};
