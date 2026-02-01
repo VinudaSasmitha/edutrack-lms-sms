@@ -33,9 +33,7 @@ const auth = getAuth(app);                // Firebase Authentication
 const db = getFirestore(app);             // Firestore Database
 
 
-/* -----------------------------
-      Get DOM elements
-      ----------------------------- */
+/* Get DOM elements */
 const ui = {
     email: document.getElementById("email"),           // Email input
     password: document.getElementById("password"),     // Password input
