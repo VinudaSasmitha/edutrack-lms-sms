@@ -1,0 +1,29 @@
+/* --- CSS VARIABLES FOR THEME MANAGEMENT --- */
+:root {
+    --primary-color: #2563eb;
+    /* Main Brand Color */
+    --primary-hover: #1d4ed8;
+    /* Darker shade for hover */
+    --bg-color: #f3f4f6;
+    /* Page Background */
+    --text-main: #1f2937;
+    /* Main Text Color */
+    --text-muted: #6b7280;
+    /* Secondary Text */
+    --error-color: #dc2626;
+    /* Error Red */
+    --white: #ffffff;
+    --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+body {
+
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
