@@ -87,9 +87,7 @@ const togglePassword = () => {
     ui.eyeIcon.style.opacity = type === "text" ? "0.5" : "1";
 };
 
-/* ------------------------------------------------
-   Check user role & redirect to correct dashboard
-   ------------------------------------------------ */
+/*    Check user role & redirect to correct dashboard */
 const checkUserRoleAndRedirect = async (user) => {
     try {
         /* ---- 1. Check users collection (Admin / Student) ---- */
@@ -106,3 +104,25 @@ const checkUserRoleAndRedirect = async (user) => {
             }
             return;
         }
+
+        /* ---- 2. Check teachers collection ---- */
+        docRef = doc(db, "teachers", user.uid);
+        docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            window.location.href = "teacher-dashboard.html";
+            return;
+        }
+
+        /* ---- 3. No profile found ---- */
+        setLoading(false);
+        displayError("Account exists but no profile found. Contact Admin.");
+        isSubmitting = false;
+
+    } catch (error) {
+        console.error("Database Error:", error);
+        setLoading(false);
+        displayError("System error. Please try again.");
+        isSubmitting = false;
+    }
+};
