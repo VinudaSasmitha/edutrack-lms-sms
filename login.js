@@ -178,3 +178,20 @@ const handleLogin = async () => {
         isSubmitting = false;
     }
 };
+
+/* -----------------------------
+       Google Sign-In login
+       ----------------------------- */
+const handleGoogleLogin = async () => {
+    if (isSubmitting) return;
+
+    const provider = new GoogleAuthProvider();
+    isSubmitting = true;
+    setLoading(true);
+
+    try {
+        await setPersistence(auth, browserLocalPersistence);
+
+        // Google popup login
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
