@@ -218,9 +218,7 @@ const handleGoogleLogin = async () => {
     }
 };
 
-/* -----------------------------
-       Event listeners
-       ----------------------------- */
+/*check Event listeners */
 document.addEventListener("DOMContentLoaded", () => {
     ui.toggleBtn.addEventListener("click", togglePassword);
     ui.loginBtn.addEventListener("click", handleLogin);
