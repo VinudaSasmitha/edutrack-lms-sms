@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduTrack Admin Portal</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="student.css">
+</head>
+
+<body>
+
+    <nav class="sidebar">
+        <div class="logo-section">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span class="logo-text">EduTrack</span>
+        </div>
+
+        <div class="menu">
+
+            <a href="myCourses.html" onclick="showToast('Courses', 'Module is loading...', 'success')" target="content_frame" class="menu-item active" onclick="activateMenu(this)">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>My Courses</span>
+            </a>
+
+            <a href="grades.html" onclick="showToast('Grades', 'Grades is loading...', 'success')" target="content_frame" class="menu-item" onclick="activateMenu(this)">
+                <i class="fa-solid fa-users"></i>
+                <span>Grades</span>
+            </a>
+
+            <a href="calendar.html" class="menu-item" onclick="showToast('calendar', 'calendar is loading...', 'success')" target="content_frame">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>calendar</span>
+            </a>
+
+            <a href="attendance.html" class="menu-item" onclick="showToast('Attendance', 'Attendance calendar...', 'success')" target="content_frame">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Attendance</span>
+            </a>
+            <a href="payment.html" class="menu-item" onclick="showToast('Payment Gateway', 'Connecting to bank...', 'success')" target="content_frame">
+                <i class="fa-solid fa-credit-card"></i>
+                <span>Payments</span>
+            </a>
+
+            <a href="profile.html" class="menu-item" onclick="showToast('profile', 'profile to bank...', 'success')" target="content_frame">
+                <i class="fa-solid fa-user"></i>
+                <span>profile</span>
+            </a>
+
+        </div>
+
+        <div class="logout-section">
+            <button id="logoutBtn" class="btn-logout" onclick="logout()">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Log Out</span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="content-area">
+        <iframe name="content_frame" src="admin-dashboard.html"></iframe>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script src="dashboard.js"></script>
+
+</body>
+
+</html>
