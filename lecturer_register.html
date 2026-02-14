@@ -1,1 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Enrollment | Campus LMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="lecturer_register.css">
+</head>
+
+<body>
+
+    <div class="overlay" id="loader">
+        <div class="spinner"></div>
+        <h3 id="loaderText" style="color: var(--primary); margin-top: 20px;">Processing...</h3>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>TEACHER ENROLLMENT</h1>
+                <span style="font-size: 12px; opacity: 0.8;">Assign Modules & Create Profile</span>
+            </div>
+            <a href="dashboard.html" class="back-btn">← Back to Dashboard</a>
+        </div>
+
+        <form id="teacherForm">
+
+            <div class="section-title"><i class="fas fa-lock"></i> Account & Login</div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="email" required placeholder="teacher@campus.lk">
+                </div>
+                <div class="form-group">
+                    <label>Temporary Password</label>
+                    <div class="password-box">
+                        <input type="text" id="password" required readonly placeholder="Click Generate ->">
+                        <button type="button" class="gen-btn" onclick="generatePassword()">
+                            <i class="fas fa-sync-alt"></i> Generate
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title"><i class="fas fa-user-tie"></i> Personal Information</div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label>Mobile Number</label>
+                    <input type="tel" id="mobile" required>
+                </div>
+                <div class="form-group">
+                    <label>NIC Number</label>
+                    <input type="text" id="nic" required>
+                </div>
+                <div class="form-group">
+                    <label>City / Address</label>
+                    <input type="text" id="address">
+                </div>
+            </div>
+
+
+</html>
