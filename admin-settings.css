@@ -1,1 +1,77 @@
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --bg-body: #f3f4f6;
+            --bg-card: #ffffff;
+            --bg-sidebar: #ffffff;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --danger: #ef4444;
+            --success: #10b981;
+            --input-bg: #ffffff;
+            --hover-bg: #f9fafb;
+            --active-bg: #eef2ff;
+        }
 
+        /* --- DARK MODE VARIABLES --- */
+        [data-theme="dark"] {
+            --primary: #6366f1;
+            /* Lighter Indigo for dark mode */
+            --primary-dark: #4f46e5;
+            --bg-body: #111827;
+            /* Very dark blue/gray */
+            --bg-card: #1f2937;
+            /* Dark gray panel */
+            --bg-sidebar: #1f2937;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --border: #374151;
+            --danger: #f87171;
+            --success: #34d399;
+            --input-bg: #374151;
+            --hover-bg: #374151;
+            --active-bg: #312e81;
+            /* Darker indigo bg */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--bg-card);
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .brand {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        
