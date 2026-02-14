@@ -129,3 +129,54 @@ import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.
                 }
 
                 // 4. Save to Database
+                loaderText.innerText = "Finalizing...";
+                const teacherData = {
+                    teacherId: teacherId,
+                    uid: user.uid,
+                    personal: {
+                        fullName: name,
+                        nic: document.getElementById('nic').value,
+                        mobile: document.getElementById('mobile').value,
+                        address: document.getElementById('address').value,
+                        photoUrl: photoUrl
+                    },
+                    professional: {
+                        email: email,
+                        role: "teacher",
+                        status: "approved",
+                        createdAt: serverTimestamp()
+                    },
+                    academic: {
+                        qualification: document.getElementById('qualification').value,
+                        experience: document.getElementById('experience').value,
+                        cvUrl: cvUrl
+                    },
+                    assignments: {
+                        modules: assignedModules
+                    }
+                };
+
+                // Use the MAIN db instance to save (using admin/current user permissions)
+                await setDoc(doc(db, "teachers", user.uid), teacherData);
+
+                // Optional: Update profile on the secondary auth
+                await updateProfile(user, { displayName: name, photoURL: photoUrl });
+                await signOut(secondaryAuth); // Sign out the new teacher immediately
+
+                alert(`✅ Teacher Enrolled Successfully!\n\nID: ${teacherId}\nPassword: ${password}\n\nPlease share these credentials with the teacher.`);
+                window.location.reload();
+
+            } catch (error) {
+                console.error(error);
+                alert("❌ Error: " + error.message);
+            } finally {
+                // Clean up the secondary app
+                if (secondaryApp) {
+                    await deleteApp(secondaryApp);
+                }
+                loader.style.display = 'none';
+            }
+        });
+
+        // Auto generate a password on page load for convenience
+        window.addEventListener('load', generatePassword);
