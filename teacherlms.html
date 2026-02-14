@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS Teacher  </title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --border: #e2e8f0;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* LAYOUT & UTILS */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .flex {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .flex-between {
+            justify-content: space-between;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        /* STANDARD BUTTONS */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-outline {
+            background: white;
+            border-color: #cbd5e1;
+            color: #475569;
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: #b91c1c;
+            border-color: #fca5a5;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 11px;
+        }
+
+        /* ✨ NEW MODERN FILE DOWNLOAD BUTTON (IN LIST) */
+        .file-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 8px 12px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            margin-top: 6px;
+            max-width: 100%;
+        }
+
+        .file-chip:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+        }
+
+        .file-chip .icon {
+            font-size: 16px;
+        }
+
+        .file-chip .action {
+            font-size: 10px;
+            opacity: 0.6;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-left: auto;
+        }
+
+        /* ✨ NEW MODERN UPLOAD ZONE (IN MODAL) */
+        .upload-zone {
+            position: relative;
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .upload-zone:hover {
+            background: #eff6ff;
+            border-color: var(--primary);
+        }
+
+        /* Hide the real ugly input but make it cover the whole div */
+        .upload-zone input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-content {
+            pointer-events: none;
+        }
+
+        .upload-icon-large {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 8px;
+            opacity: 0.8;
+        }
+
+        .upload-text {
+            font-weight: 600;
+            color: #475569;
+            display: block;
+        }
+
+        .upload-sub {
+            font-size: 11px;
+            color: #94a3b8;
+            display: block;
+            margin-top: 4px;
+        }
+
+        /* GRID TABLE */
+        .grid-header,
+        .grid-row {
+            display: grid;
+            grid-template-columns: 40px 3fr 1.5fr 1.5fr 1fr 1.2fr;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            align-items: center;
+        }
+
+        .grid-header {
+            background: #f1f5f9;
+            font-weight: 700;
+            color: #64748b;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .grid-row {
+            background: white;
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .grid-row:hover {
+            background: #f8fafc;
+        }
+
+        /* STATUS STATES */
+        .row-urgent-warn {
+            background: #fffbeb;
+            border-left-color: var(--warning);
+        }
+
+        .row-urgent-crit {
+            background: #fef2f2;
+            border-left-color: var(--danger);
+            animation: pulse 2s infinite;
+        }
+
+        .row-closed {
+            opacity: 0.6;
+            filter: grayscale(1);
+            background: #f1f5f9;
+        }
+
+        @keyframes pulse {
+            0% {
+                background-color: #fef2f2;
+            }
+
+            50% {
+                background-color: #fee2e2;
+            }
+
+            100% {
+                background-color: #fef2f2;
+            }
+        }
+
+        /* BADGES & TIMERS */
+        .badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .b-draft {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .b-pub {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .b-closed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .timer-pill {
+            font-family: monospace;
+            font-weight: 600;
+            background: #e0f2fe;
+            color: #0284c7;
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-block;
+            min-width: 85px;
+            text-align: center;
+        }
+
+        .timer-pill.urgent {
+            background: #ffedd5;
+            color: #c2410c;
+        }
+
+        .timer-pill.critical {
+            background: #fee2e2;
+            color: #dc2626;
+            font-weight: 800;
+        }
+
+        /* TOASTS */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 999;
+        }
+
+        .toast {
+            background: #1e293b;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            min-width: 280px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.3s ease;
+        }
+
+        .undo-btn {
+            background: white;
+            color: #1e293b;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        /* FORM */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 12px;
+            color: #334155;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div id="toast-container"></div>
+
+        <div class="header flex flex-between" style="margin-bottom:25px; flex-wrap:wrap; gap:15px">
+            <div>
+                <h1 style="margin:0; font-size:26px; letter-spacing:-0.5px">👨‍🏫 Teacher<span
+                        style="color:var(--primary)">Pro</span></h1>
+            </div>
+            <div class="flex">
+                <input type="text" id="search-input" class="form-control" placeholder="🔍 Search..."
+                    style="width:220px; padding:10px;" onkeyup="UI.render()">
+                <button class="btn btn-primary" onclick="UI.openCreate()">+ New Assignment</button>
+            </div>
+        </div>
+
+        <div id="batch-bar" class="card hidden" style="background:#fff7ed; border-color:#fed7aa; padding:12px 24px;">
+            <div class="flex flex-between">
+                <div class="flex">
+                    <strong style="color:#c2410c" id="batch-count">0 Selected</strong>
+                    <span style="color:#fdba74">|</span>
+                    <button class="btn btn-danger btn-sm" onclick="App.batchDelete()">🗑 Delete Selected</button>
+                    <button class="btn btn-outline btn-sm" onclick="App.batchClose()">🔒 Close Selected</button>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="UI.toggleAll(false)">Cancel</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="grid-header">
+                <div><input type="checkbox" id="chk-all" onchange="UI.toggleAll(this.checked)"></div>
+                <div>Assignment & File</div>
+                <div>Course</div>
+                <div>Timer</div>
+                <div>Status</div>
+                <div style="text-align:right">Actions</div>
+            </div>
+            <div id="list"></div>
+        </div>
+    </div>
+
+    <div id="modal-overlay" class="hidden"
+        style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index:500; display:flex; justify-content:center; align-items:center;">
+        <div class="card"
+            style="width:550px; padding:30px; margin:0; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+            <h2 id="modal-title" style="margin-top:0; font-size: 20px; color:#1e293b">Create Assignment</h2>
+            <input type="hidden" id="edit-id">
+
+            <div class="form-group">
+                <label>Title <span style="color:red">*</span></label>
+                <input type="text" id="inp-title" class="form-control" placeholder="e.g. Midterm Project">
+            </div>
+
+            <div class="flex" style="gap:15px">
+                <div class="form-group" style="flex:1">
+                    <label>Course</label>
+                    <select id="inp-course" class="form-control">
+                        <option>Mathematics</option>
+                        <option>Physics</option>
+                        <option>Chemistry</option>
+                        <option>History</option>
+                        <option>Literature</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label>Due Date <span style="color:red">*</span></label>
+                    <input type="datetime-local" id="inp-date" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-group">
+              <label>Allowed Attempts <span style="color:red">*</span></label>
+              <input type="number"
+                      id="inp-attempts"
+                      class="form-control"
+                      min="1"
+                      max="10"
+                      value="1"
+                      placeholder="e.g. 2">
+                <small style="color:#64748b; font-size:12px">
+                    Number of times a student can submit this assignment
+                </small>
+            </div>
+
+
+            <div class="form-group">
+                <label>Description (Optional)</label>
+                <textarea id="inp-desc" class="form-control" placeholder="Instructions..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Attach Resource</label>
+                <div class="upload-zone">
+                    <input type="file" id="inp-file" onchange="UI.updateFileLabel(this)">
+                    <div class="upload-content">
+                        <span class="upload-icon-large">📂</span>
+                        <span id="upload-label-text" class="upload-text">Click to browse or drag file here</span>
+                        <span class="upload-sub">Max 2MB (PDF, DOCX, IMG)</span>
+                    </div>
+                </div>
+                <div id="curr-file-status"
+                    style="margin-top:8px; font-size:13px; color:var(--primary); font-weight:600; text-align:center;">
+                </div>
+            </div>
+
+            <div class="flex flex-between" style="margin-top:25px; border-top:1px solid #e2e8f0; padding-top:20px">
+                <button class="btn btn-outline" onclick="UI.closeModal()">Cancel</button>
+                <div class="flex">
+                    <button class="btn btn-outline" onclick="App.save('Draft')">Save Draft</button>
+                    <button class="btn btn-primary" onclick="App.save('Published')">🚀 Publish</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /** 🛠️ UTILS */
+        const Utils = {
+            genID: () => Date.now().toString(36) + Math.random().toString(36).substr(2, 5),
+            escape: (s) => s ? s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', '\'': '&#39;' }[c])) : '',
+
+            getIcon: (fname) => {
+                if (!fname) return '📄';
+                const ext = fname.split('.').pop().toLowerCase();
+                if (ext === 'pdf') return '📕';
+                if (['doc', 'docx'].includes(ext)) return '🟦';
+                if (['jpg', 'png', 'jpeg'].includes(ext)) return '🖼️';
+                return '📄';
+            },
+
+            toast: (msg, type = 'normal', undoFn = null) => {
+                const box = document.getElementById('toast-container');
+                const el = document.createElement('div');
+                el.className = 'toast';
+                el.style.borderLeft = `4px solid ${type === 'alert' ? '#ef4444' : '#10b981'}`;
+                let html = `<span>${Utils.escape(msg)}</span>`;
+                if (undoFn) html += `<button id="undo-btn" class="undo-btn">UNDO</button>`;
+                el.innerHTML = html;
+
+                if (undoFn) {
+                    el.querySelector('#undo-btn').onclick = () => { undoFn(); el.remove(); };
+                }
+                box.appendChild(el);
+                setTimeout(() => { if (el.parentNode) el.remove(); }, 5000);
+            }
+        };
+
+        /** 💾 DATA STORE */
+        const Store = {
+            data: JSON.parse(localStorage.getItem('lms_v16')) || [],
+            deletedCache: [],
+
+            save: () => {
+                try {
+                    localStorage.setItem('lms_v16', JSON.stringify(Store.data));
+                } catch (e) {
+                    alert("❌ Storage Full! Delete some items or remove large files.");
+                }
+            },
+
+            add: (item) => { Store.data.push(item); Store.save(); },
+            update: (id, updates) => {
+                const idx = Store.data.findIndex(x => x.id === id);
+                if (idx > -1) { Store.data[idx] = { ...Store.data[idx], ...updates }; Store.save(); }
+            },
+            deleteMany: (ids) => {
+                Store.deletedCache = Store.data.filter(x => ids.includes(x.id));
+                Store.data = Store.data.filter(x => !ids.includes(x.id));
+                Store.save();
+            },
+            undoDelete: () => {
+                Store.data.push(...Store.deletedCache);
+                Store.deletedCache = [];
+                Store.save();
+            }
+        };
+
+        /** 🧠 LOGIC */
+        const App = {
+            init: () => {
+                setInterval(App.tick, 1000);
+                UI.render();
+            },
+
+            tick: () => {
+                const now = new Date();
+                let needsRender = false;
+                Store.data.forEach(a => {
+                    if (a.status !== 'Published') return;
+
+                    const diff = new Date(a.dueDate) - now;
+                    if (diff <= 0) {
+                        a.status = 'Closed';
+                        Utils.toast(`🔒 Deadline passed: ${a.title}`, 'alert');
+                        needsRender = true;
+                    }
+                    else if (diff < 600000 && !a.alerts.m10) {
+                        Utils.toast(`🚨 CRITICAL: ${a.title}`, 'alert');
+                        a.alerts.m10 = true;
+                        needsRender = true;
+                    }
+                    else if (diff < 3600000 && !a.alerts.h1) {
+                        Utils.toast(`⚠️ Warning: ${a.title}`, 'normal');
+                        a.alerts.h1 = true;
+                    }
+
+                    const el = document.getElementById(`t-${a.id}`);
+                    if (el) {
+                        el.innerText = App.formatTime(diff);
+                        el.className = 'timer-pill';
+                        if (diff < 600000) el.classList.add('critical');
+                        else if (diff < 3600000) el.classList.add('urgent');
+                    }
+                });
+                if (needsRender) UI.render();
+            },
+
+            formatTime: (ms) => {
+                if (ms <= 0) return "Expired";
+                const sec = Math.floor((ms / 1000) % 60);
+                const min = Math.floor((ms / (1000 * 60)) % 60);
+                const hrs = Math.floor((ms / (1000 * 60 * 60)) % 24);
+                const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+                if (days > 0) return `${days}d ${hrs}h`;
+                return `${hrs}:${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+            },
+
+            save: (targetStatus) => {
+                const id = document.getElementById('edit-id').value;
+                const title = document.getElementById('inp-title').value.trim();
+                const course = document.getElementById('inp-course').value;
+                const dateStr = document.getElementById('inp-date').value;
+                const desc = document.getElementById('inp-desc').value;
+                const fileInput = document.getElementById('inp-file');
+
+                if (!title || !dateStr) return alert("Title and Date are required.");
+
+                if (new Date(dateStr).getTime() < Date.now() && targetStatus === 'Published') {
+                    return alert("❌ Cannot publish in the past.");
+                }
+                if (targetStatus === 'Published' && !confirm("Confirm Publish?")) return;
+
+                const commit = (fileName, fileData) => {
+                  const attempts = parseInt(document.getElementById('inp-attempts').value) || 1;
+                  if (attempts < 1) {
+                    return alert("Allowed attempts must be at least 1");
+                  }
+                    const payload = { title, course, dueDate: dateStr, description: desc,attempts, status: targetStatus, alerts: { h1: false, m10: false } };
+
+                    if (id) {
+                        const old = Store.data.find(x => x.id === id);
+                        if (fileName) { payload.file = fileName; payload.fileData = fileData; }
+                        else { payload.file = old.file; payload.fileData = old.fileData; }
+                        Store.update(id, payload);
+                    } else {
+                        payload.id = Utils.genID();
+                        payload.file = fileName;
+                        payload.fileData = fileData;
+                        Store.add(payload);
+                    }
+                    UI.closeModal();
+                    UI.render();
+                    Utils.toast(`Saved Successfully ✅`);
+                };
+
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    if (file.size > 2 * 1024 * 1024) return alert("⚠️ File too large (Max 2MB).");
+                    const reader = new FileReader();
+                    reader.onload = (e) => commit(file.name, e.target.result);
+                    reader.readAsDataURL(file);
+                } else {
+                    commit(null, null);
+                }
+            },
+
+            batchDelete: () => {
+                const ids = Array.from(document.querySelectorAll('.row-chk:checked')).map(c => c.value);
+                if (!ids.length) return;
+                if (confirm(`Delete ${ids.length} items?`)) {
+                    Store.deleteMany(ids);
+                    UI.render();
+                    Utils.toast(`Deleted ${ids.length} items`, 'alert', () => {
+                        Store.undoDelete();
+                        UI.render();
+                        Utils.toast("Restored! ♻️");
+                    });
+                }
+            },
+
+            batchClose: () => {
+                const ids = Array.from(document.querySelectorAll('.row-chk:checked')).map(c => c.value);
+                ids.forEach(id => Store.update(id, { status: 'Closed' }));
+                UI.render();
+                Utils.toast("Selected items closed");
+            }
+        };
+
+        /** 🎨 UI RENDERER */
+        const UI = {
+            toggleAll: (checked) => {
+                document.querySelectorAll('.row-chk').forEach(c => c.checked = checked);
+                UI.checkBatch();
+            },
+
+            checkBatch: () => {
+                const count = document.querySelectorAll('.row-chk:checked').length;
+                const bar = document.getElementById('batch-bar');
+                if (count > 0) {
+                    bar.classList.remove('hidden');
+                    document.getElementById('batch-count').innerText = `${count} Selected`;
+                } else {
+                    bar.classList.add('hidden');
+                }
+            },
+
+            // ✨ UI HELPER: Update label text when file picked
+            updateFileLabel: (input) => {
+                if (input.files.length > 0) {
+                    document.getElementById('upload-label-text').innerText = input.files[0].name;
+                    document.getElementById('upload-label-text').style.color = '#2563eb';
+                } else {
+                    document.getElementById('upload-label-text').innerText = "Click to browse or drag file here";
+                    document.getElementById('upload-label-text').style.color = '#475569';
+                }
+            },
+
+            render: () => {
+                const list = document.getElementById('list');
+                const search = document.getElementById('search-input').value.toLowerCase();
+                list.innerHTML = "";
+
+                const filtered = Store.data.filter(a => a.title.toLowerCase().includes(search) || a.course.toLowerCase().includes(search));
+                const sorted = filtered.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+
+                if (sorted.length === 0) {
+                    list.innerHTML = `<div style="padding:40px; text-align:center; color:#94a3b8">No assignments found.</div>`;
+                    return;
+                }
+
+                const now = new Date();
+
+                sorted.forEach(a => {
+                    const diff = new Date(a.dueDate) - now;
+                    let rowClass = "grid-row";
+                    let statusHTML = `<span class="badge b-draft">Draft</span>`;
+                    let timeHTML = `<span style="color:#94a3b8">--</span>`;
+
+                    if (a.status === 'Published') {
+                        statusHTML = `<span class="badge b-pub">Published</span>`;
+                        if (diff < 600000) rowClass += " row-urgent-crit";
+                        else if (diff < 3600000) rowClass += " row-urgent-warn";
+                        timeHTML = `<span id="t-${a.id}" class="timer-pill">${App.formatTime(diff)}</span>`;
+                    }
+                    else if (a.status === 'Closed') {
+                        statusHTML = `<span class="badge b-closed">Closed</span>`;
+                        rowClass += " row-closed";
+                        timeHTML = `<span class="timer-pill" style="background:#e2e8f0; color:#64748b">Expired</span>`;
+                    }
+
+                    // ✨ MODERN FILE BUTTON
+                    const fileHTML = (a.file && a.fileData)
+                        ? `<a href="${a.fileData}" download="${a.file}" class="file-chip" title="Click to Download">
+             <span class="icon">${Utils.getIcon(a.file)}</span> 
+             <span>${Utils.escape(a.file)}</span>
+             <span class="action">Down ⬇</span>
+           </a>`
+                        : (a.file ? `<span style="color:#94a3b8; font-size:12px; display:block; margin-top:5px">${Utils.getIcon(a.file)} ${Utils.escape(a.file)} (No Data)</span>` : '');
+
+                    list.innerHTML += `
+        <div class="${rowClass}">
+          <div><input type="checkbox" class="row-chk" value="${a.id}" onchange="UI.checkBatch()"></div>
+          <div>
+            <div style="font-weight:600; font-size:15px; color:#1e293b">${Utils.escape(a.title)}</div>
+            ${fileHTML}
+          </div>
+          <div style="color:#64748b; font-weight:500">${Utils.escape(a.course)}</div>
+          <div>${timeHTML}</div>
+          <div>${statusHTML}</div>
+          <div style="text-align:right">
+            <button class="btn btn-outline btn-sm" onclick="UI.openEdit('${a.id}')">✏️ Edit</button>
+          </div>
+        </div>
+      `;
+                });
+
+                document.getElementById('chk-all').checked = false;
+                UI.checkBatch();
+            },
+
+            openCreate: () => {
+                document.getElementById('modal-title').innerText = "Create Assignment";
+                document.getElementById('edit-id').value = "";
+                document.getElementById('inp-title').value = "";
+                document.getElementById('inp-course').value = "Mathematics";
+                document.getElementById('inp-date').value = "";
+                document.getElementById('inp-desc').value = "";
+                document.getElementById('inp-file').value = "";
+
+                // Reset Modern Upload UI
+                document.getElementById('upload-label-text').innerText = "Click to browse or drag file here";
+                document.getElementById('curr-file-status').innerText = "";
+
+                document.getElementById('modal-overlay').classList.remove('hidden');
+              document.getElementById('inp-attempts').value = 1;
+              },
+
+            openEdit: (id) => {
+                const a = Store.data.find(x => x.id === id);
+                document.getElementById('modal-title').innerText = "Edit Assignment";
+                document.getElementById('edit-id').value = id;
+                document.getElementById('inp-title').value = a.title;
+                document.getElementById('inp-course').value = a.course;
+                document.getElementById('inp-date').value = a.dueDate;
+                document.getElementById('inp-desc').value = a.description || "";
+                document.getElementById('inp-file').value = "";
+                document.getElementById('inp-attempts').value = a.attempts || 1;
+
+                // Reset Modern Upload UI
+                document.getElementById('upload-label-text').innerText = "Click to change file";
+
+                // Show current file
+                const statusDiv = document.getElementById('curr-file-status');
+                statusDiv.innerHTML = a.file
+                    ? `Current: ${Utils.getIcon(a.file)} ${a.file}`
+                    : '<span style="color:#94a3b8">No file attached</span>';
+
+                document.getElementById('modal-overlay').classList.remove('hidden');
+            },
+
+            closeModal: () => {
+                document.getElementById('modal-overlay').classList.add('hidden');
+            }
+        };
+
+        // Start
+        App.init();
+    </script>
+</body>
+
+</html>
