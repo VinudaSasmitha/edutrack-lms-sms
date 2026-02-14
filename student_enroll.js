@@ -134,3 +134,48 @@
                             email: email,
                             address: document.getElementById('address').value
                         },
+                        academic: {
+                            course: courseName,
+                            intake: document.getElementById('intake').value,
+                            mode: document.getElementById('mode').value
+                        },
+                        finance: {
+                            totalFee: parseFloat(document.getElementById('feeTotal').value) || 0,
+                            discount: parseFloat(document.getElementById('feeDiscount').value) || 0,
+                            paid: parseFloat(document.getElementById('feePaid').value) || 0,
+                            balance: parseFloat(document.getElementById('feeBalance').value) || 0,
+                            method: document.getElementById('payMethod').value,
+                            status: document.getElementById('statusText').innerText
+                        }
+                    };
+
+                    transaction.set(newStudentRef, studentData);
+                    transaction.set(nicRef, { studentId: userUid, admNo: admissionNo });
+                    transaction.set(counterRef, { count: nextNum }, { merge: true });
+
+                    return admissionNo;
+                });
+
+                // Step D: Upload Files
+                const admNo = result;
+                const basePath = `student_docs/${admNo}`;
+
+                await Promise.all([
+                    uploadDoc(document.getElementById('filePhoto').files[0], `${basePath}/photo.jpg`),
+                    uploadDoc(document.getElementById('fileNIC').files[0], `${basePath}/nic_copy.pdf`),
+                    uploadDoc(document.getElementById('fileEdu').files[0], `${basePath}/edu_certificates.pdf`)
+                ]);
+
+                loader.style.display = 'none';
+
+                // Success Message with Password Info
+                alert(`✅ ENROLLMENT SUCCESSFUL!\n\nAdmission No: ${admNo}\n\n🔐 Login Created:\nEmail: ${email}\nPassword: ${tempPassword}\n\nPlease share this password with the student.`);
+
+                window.location.href = 'index.html';
+
+            } catch (error) {
+                console.error(error);
+                loader.style.display = 'none';
+                alert("❌ REGISTRATION FAILED:\n" + (error.message || error));
+            }
+        });
