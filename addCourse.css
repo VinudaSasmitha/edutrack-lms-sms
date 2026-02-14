@@ -1,0 +1,71 @@
+body {
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f5f5; /* soft light background */
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 50px;
+    flex-direction: column;
+}
+
+h2 {
+    text-align: center;
+    color: #1e4fd8;
+    margin-bottom: 30px;
+    font-size: 28px;
+    letter-spacing: 1px;
+}
+
+.courses-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto 50px auto;
+}
+
+.course-card {
+    background: #ffffff; /* updated white background */
+    border-radius: 18px;
+    padding: 20px 25px;
+    width: 280px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15); /* softer shadow for white bg */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+.course-card h3 {
+    margin: 0 0 10px 0;
+    color: #1e4fd8; /* readable on white */
+    font-size: 20px;
+}
+
+.course-card p {
+    margin: 5px 0;
+    color: #555;
+    font-size: 14px;
+}
+
+.course-card .instructor {
+    font-weight: 600;
+    color: #2563eb;
+    margin-top: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .course-card {
+        width: 90%;
+    }
+}
