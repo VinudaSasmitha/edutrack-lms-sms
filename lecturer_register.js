@@ -57,3 +57,53 @@ import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.
             `).join('');
         }
 
+        // --- AUTO ID GENERATION (T-2026-001) ---
+        async function generateTeacherId() {
+            const counterRef = doc(db, "counters", "teachers");
+            const counterSnap = await getDoc(counterRef);
+            let currentCount = 1;
+
+            if (counterSnap.exists()) {
+                currentCount = counterSnap.data().lastIndex + 1;
+                await updateDoc(counterRef, { lastIndex: increment(1) });
+            } else {
+                await setDoc(counterRef, { lastIndex: 1 });
+            }
+            const year = new Date().getFullYear();
+            return `T-${year}-${String(currentCount).padStart(3, '0')}`;
+        }
+
+        // --- SUBMIT LOGIC ---
+        document.getElementById('teacherForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (assignedModules.length === 0) {
+                alert("⚠️ Please assign at least one module!");
+                return;
+            }
+
+            const loader = document.getElementById('loader');
+            const loaderText = document.getElementById('loaderText');
+            loader.style.display = 'flex';
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value; // Temp password
+            const name = document.getElementById('fullName').value;
+
+            // ⚠️ SECONDARY APP to prevent logging out the current Admin
+            let secondaryApp = null;
+
+            try {
+                // 1. Generate ID
+                loaderText.innerText = "Generating ID...";
+                const teacherId = await generateTeacherId();
+
+                // 2. Create User (Using Secondary App)
+                loaderText.innerText = "Creating Account...";
+
+                // Initialize a temporary app instance for creating the user
+                secondaryApp = initializeApp(firebaseConfig, "Secondary");
+                const secondaryAuth = getAuth(secondaryApp);
+
+                const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+                const user = userCredential.user;
