@@ -48,3 +48,35 @@
                             window.location.href = "index.html"; // Redirect non-admins
                             return;
                         }
+
+                        // 2. Load UI Data
+                        document.getElementById('adminNameDisplay').innerText = userData.name || "Admin";
+                        document.getElementById('profileNameHead').innerText = userData.name || "Admin";
+                        document.getElementById('profileNameInput').value = userData.name || "";
+                        document.getElementById('profileEmailInput').value = user.email;
+                        document.getElementById('profileAvatar').innerText = (userData.name || "A").charAt(0).toUpperCase();
+
+                        // Load Settings into forms (Simulated loading for now, creates doc if empty)
+                        loadSettingsToForms(userData);
+                    }
+                } catch (error) {
+                    console.error("Error fetching admin profile:", error);
+                    showToast("System Error", "Could not verify admin privileges", "error");
+                }
+            } else {
+                // Not logged in -> Redirect
+                window.location.href = "login.html";
+            }
+        });
+
+        // --- SETTINGS MANAGEMENT (✅ STEP 3: setDoc merge) ---
+        window.saveSettings = async function (event, section) {
+            event.preventDefault();
+
+            // ✅ STEP 2: Write Guard
+            if (!currentUserUid) {
+                showToast("Login required", "Please login first", "error");
+                return;
+            }
+
+           
