@@ -1,1 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS Admin | Settings & Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="admin-settings.css">
+
+</head>
+<body>
+    <div id="toast-container"></div>
+
+    <header>
+        <div class="brand">
+            <i class="fa-solid fa-graduation-cap"></i> EduTrack <span
+                style="font-weight:300; font-size:1rem; color:var(--text-muted); margin-left:8px;">| Settings</span>
+        </div>
+        <div class="header-actions">
+            <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+            <span style="font-size:0.9rem; font-weight:500;" id="adminNameDisplay">Admin</span>
+            <button class="logout-btn" id="logoutBtn"><i class="fa-solid fa-power-off"></i> Logout</button>
+        </div>
+    </header>
+
+    <div class="layout-container">
+        <div class="sidebar">
+            <div class="sidebar-label">Personal</div>
+            <div class="tab-btn active" onclick="switchTab('profile')"><i class="fa-solid fa-user-circle"></i> My
+                Profile</div>
+
+            <div class="sidebar-label">System</div>
+            <div class="tab-btn" onclick="switchTab('general')"><i class="fa-solid fa-sliders"></i> General & Branding
+            </div>
+            <div class="tab-btn" onclick="switchTab('academic')"><i class="fa-solid fa-calendar-days"></i> Academic
+            </div>
+
+            <div class="sidebar-label">Users & Access</div>
+            <div class="tab-btn" onclick="switchTab('users')"><i class="fa-solid fa-users-gear"></i> User Defaults</div>
+            <div class="tab-btn" onclick="switchTab('security')"><i class="fa-solid fa-shield-halved"></i> Security
+            </div>
+
+            <div class="sidebar-label">Communication</div>
+            <div class="tab-btn" onclick="switchTab('notifications')"><i class="fa-regular fa-bell"></i> Notifications
+            </div>
+
+            <div class="sidebar-label">Maintenance</div>
+            <div class="tab-btn" onclick="switchTab('backup')"><i class="fa-solid fa-database"></i> Backup & Data</div>
+            <div class="tab-btn" onclick="switchTab('logs')"><i class="fa-solid fa-list-check"></i> Activity Logs</div>
+        </div>
+
+        <div class="content-area">
+
+            <div id="tab-profile" class="tab-content active">
+                <div class="section-header">
+                    <h2>My Profile</h2>
+                    <p>Manage your account details and password.</p>
+                </div>
+
+                <div class="card">
+                    <div class="profile-header">
+                        <div class="avatar-circle" id="profileAvatar">A</div>
+                        <div>
+                            <h3 id="profileNameHead">Admin User</h3>
+                            <p style="color:var(--text-muted); font-size:0.9rem;">Administrator</p>
+                        </div>
+                    </div>
+
+                    <form onsubmit="updateProfile(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="label">Full Name</label>
+                                <input type="text" id="profileNameInput" class="form-control" placeholder="Your Name">
+                            </div>
+                            <div class="form-group">
+                                <label class="label">Email Address (Read Only)</label>
+                                <input type="email" id="profileEmailInput" class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="action-bar">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>Security</h3>
+                    <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px;">
+                        Need to change your password? We will send a reset link to your email.
+                    </p>
+                    <button class="btn btn-outline" onclick="sendPasswordReset()">
+                        <i class="fa-solid fa-envelope"></i> Send Password Reset Email
+                    </button>
+                </div>
+            </div>
+
+            <div id="tab-general" class="tab-content">
+                <div class="section-header">
+                    <h2>System & Branding</h2>
+                    <p>Configure general application settings, timezone, and branding.</p>
+                </div>
+                <form onsubmit="saveSettings(event, 'general')">
+                    <div class="card">
+                        <h3><i class="fa-solid fa-globe"></i> Regional Settings</h3>
+                        <br>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="label">Application Name</label>
+                                <input type="text" name="appName" class="form-control" value="EduTrack LMS">
+                            </div>
+                            <div class="form-group">
+                                <label class="label">Timezone</label>
+                                <select name="timezone" class="form-control">
+                                    <option value="Asia/Colombo">Asia/Colombo (GMT+5:30)</option>
+                                    <option value="UTC">UTC</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3><i class="fa-solid fa-screwdriver-wrench"></i> Mode Control</h3>
+                        <div class="toggle-row">
+                            <div class="toggle-text">
+                                <h4>Maintenance Mode</h4>
+                                <p>Only admins can log in. Show "Under Maintenance" to others.</p>
+                            </div>
+                            <label class="switch"><input type="checkbox" name="maintenanceMode"><span
+                                    class="slider"></span></label>
+                        </div>
+                        <div class="toggle-row">
+                            <div class="toggle-text">
+                                <h4>Read-Only Mode</h4>
+                                <p>Users can view content but cannot submit assignments.</p>
+                            </div>
+                            <label class="switch"><input type="checkbox" name="readOnlyMode"><span
+                                    class="slider"></span></label>
+                        </div>
+                    </div>
+                    <div class="action-bar">
+                        <button type="submit" class="btn btn-primary">Save General Settings</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="tab-academic" class="tab-content">
+                <div class="section-header">
+                    <h2>Academic Configuration</h2>
+                    <p>Manage terms, grading scales, and attendance rules.</p>
+                </div>
+                <form onsubmit="saveSettings(event, 'academic')">
+                    <div class="card">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="label">Current Academic Year</label>
+                                <input type="text" name="academicYear" class="form-control" placeholder="2025-2026">
+                            </div>
+                            <div class="form-group">
+                                <label class="label">Current Term</label>
+                                <select name="currentTerm" class="form-control">
+                                    <option>Term 1</option>
+                                    <option>Term 2</option>
+                                    <option>Term 3</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="label">Term Start Date</label>
+                                <input type="date" name="termStart" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label class="label">Term End Date</label>
+                                <input type="date" name="termEnd" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="action-bar">
+                        <button type="submit" class="btn btn-primary">Update Academic Settings</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="tab-users" class="tab-content">
+                <div class="section-header">
+                    <h2>User & Role Defaults</h2>
+                    <p>Control how new users are onboarded.</p>
+                </div>
+                <form onsubmit="saveSettings(event, 'users')">
+                    <div class="card">
+                        <div class="toggle-row">
+                            <div class="toggle-text">
+                                <h4>Teacher Verification Required</h4>
+                                <p>New teacher accounts must be approved by admin.</p>
+                            </div>
+                            <label class="switch"><input type="checkbox" name="teacherApproval" checked><span
+                                    class="slider"></span></label>
+                        </div>
+                        <div class="toggle-row">
+                            <div class="toggle-text">
+                                <h4>Parent-Student Linking</h4>
+                                <p>Parents must verify student ID via email OTP.</p>
+                            </div>
+                            <label class="switch"><input type="checkbox" name="parentVerify" checked><span
+                                    class="slider"></span></label>
+                        </div>
+                    </div>
+                    <div class="action-bar">
+                        <button type="submit" class="btn btn-primary">Save User Rules</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="tab-security" class="tab-content">
+                <div class="section-header">
+                    <h2>Security Policy</h2>
+                    <p>Manage session limits and passwords.</p>
+                </div>
+                <form onsubmit="saveSettings(event, 'security')">
+                    <div class="card">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="label">Max Login Attempts</label>
+                                <select name="maxAttempts" class="form-control">
+                                    <option value="3">3 Attempts</option>
+                                    <option value="5">5 Attempts</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="toggle-row">
+                            <div class="toggle-text">
+                                <h4>Single Device Login</h4>
+                                <p>Prevent users from logging in on multiple devices.</p>
+                            </div>
+                            <label class="switch"><input type="checkbox" name="singleSession"><span
+                                    class="slider"></span></label>
+                        </div>
+                    </div>
+                    <div class="card" style="border-color: var(--danger); background: rgba(239, 68, 68, 0.05);">
+                        <h4 style="color: var(--danger); margin-bottom: 10px;">Emergency Actions</h4>
+                        <p style="font-size: 0.9rem; margin-bottom: 15px; color: var(--text-muted);">Terminate all
+                            active sessions immediately.</p>
+                        <button type="button" class="btn btn-danger" onclick="confirmAction('Force Logout All Users?')">
+                            <i class="fa-solid fa-bomb"></i> Force Logout All Users
+                        </button>
+                    </div>
+                    <div class="action-bar">
+                        <button type="submit" class="btn btn-primary">Update Security Policies</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="tab-notifications" class="tab-content">
+                <div class="section-header">
+                    <h2>Notification Preferences</h2>
+                </div>
+                <form onsubmit="saveSettings(event, 'notifications')">
+                    <div class="card">
+                        <div class="toggle-row">
+                            <div class="toggle-text">
+                                <h4>Email Notifications</h4>
+                                <p>Send automated emails for assignments.</p>
+                            </div>
+                            <label class="switch"><input type="checkbox" name="emailNotif" checked><span
+                                    class="slider"></span></label>
+                        </div>
+                    </div>
+                    <div class="action-bar">
+                        <button type="submit" class="btn btn-primary">Save Preferences</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="tab-backup" class="tab-content">
+                <div class="section-header">
+                    <h2>Data & Maintenance</h2>
+                </div>
+                <div class="card">
+                    <h3>Manual Backup</h3>
+                    <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px;">
+                        Download a JSON snapshot of current users.
+                    </p>
+                    <button class="btn btn-outline"
+                        onclick="showToast('Backup Started', 'Generating JSON...', 'success')">
+                        <i class="fa-solid fa-download"></i> Download Backup
+                    </button>
+                </div>
+            </div>
+
+            <div id="tab-logs" class="tab-content">
+                <div class="section-header">
+                    <h2>Admin Activity Logs</h2>
+                    <p>Audit trail of system changes.</p>
+                </div>
+                <div class="card" style="padding:0; overflow:hidden;">
+                    <table class="log-table">
+                        <thead>
+                            <tr>
+                                <th>Action</th>
+                                <th>User</th>
+                                <th>Details</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activityLogBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
