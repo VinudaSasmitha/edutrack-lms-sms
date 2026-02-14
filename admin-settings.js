@@ -228,3 +228,40 @@
         };
 
         // Helper: Load Settings into Input Fields
+        function loadSettingsToForms(userData) {
+            if (!userData.settings) return;
+
+            // Recursively find inputs matching setting keys
+            for (const section in userData.settings) {
+                const sectionData = userData.settings[section];
+                for (const key in sectionData) {
+                    const input = document.querySelector(`[name="${key}"]`);
+                    if (input) {
+                        if (input.type === 'checkbox') {
+                            input.checked = sectionData[key];
+                        } else {
+                            input.value = sectionData[key];
+                        }
+                    }
+                }
+            }
+        }
+
+        // --- TODO ITEMS (✅ STEP 6) ---
+
+        // TODO: Implement real activity logs (Fetch from 'logs' collection)
+        const logBody = document.getElementById('activityLogBody');
+        if (logBody) {
+            logBody.innerHTML = `
+            <tr>
+                <td colspan="4" style="text-align:center; color:var(--text-muted); padding: 20px;">
+                    <i class="fa-solid fa-code"></i> Real logs coming soon (TODO)
+                </td>
+            </tr>
+        `;
+        }
+
+        // TODO: Implement real backup generation
+        window.sendPasswordReset = function () {
+            showToast("Feature Pending", "Password reset email logic is TODO", "error");
+        };
