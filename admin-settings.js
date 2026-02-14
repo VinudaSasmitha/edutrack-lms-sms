@@ -153,3 +153,33 @@
                 showToast("Error", error.message, "error");
             }
         };
+
+        // --- LOGOUT (✅ STEP 5) ---
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                signOut(auth).then(() => {
+                    showToast("Logged Out", "Redirecting...", "success");
+                    setTimeout(() => window.location.href = "login.html", 1000);
+                }).catch((error) => {
+                    showToast("Error", "Logout failed", "error");
+                });
+            });
+        }
+
+        // --- UI HELPERS (Tabs, Theme, Toast) ---
+
+        // Tab Switching
+        window.switchTab = function (tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            // Find the button that called this (simple logic)
+            const buttons = document.querySelectorAll('.tab-btn');
+            // Loop to match text icon logic or just rely on simple onclick binding in HTML
+            // For this snippet, we assume the user clicks the button which triggers this.
+            event.currentTarget.classList.add('active');
+        };
+
+        /
