@@ -79,4 +79,36 @@
                 return;
             }
 
-           
+            const btn = event.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Saving...`;
+            btn.disabled = true;
+
+            // Gather Data from Form
+            const formData = new FormData(event.target);
+            const data = {};
+            formData.forEach((value, key) => {
+                // Convert 'on' to boolean for checkboxes
+                if (event.target.querySelector(`[name="${key}"]`).type === 'checkbox') {
+                    data[key] = true;
+                } else {
+                    data[key] = value;
+                }
+            });
+
+            // Handle unchecked checkboxes (FormData ignores them)
+            event.target.querySelectorAll('input[type="checkbox"]:not(:checked)').forEach(box => {
+                data[box.name] = false;
+            });
+
+            try {
+                // ✅ STEP 3: Use setDoc with merge:true
+                // We save everything under the user's document for simplicity in this example
+                // In a real app, you might have a separate 'settings' collection
+                await setDoc(doc(db, "users", currentUserUid), {
+                    settings: {
+                        [section]: data
+                    }
+                }, { merge: true });
+
+             
