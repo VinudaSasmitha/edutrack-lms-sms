@@ -182,4 +182,49 @@
             event.currentTarget.classList.add('active');
         };
 
-        /
+        // Theme Toggle
+        window.toggleTheme = function () {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+
+            const icon = document.querySelector('.theme-toggle i');
+            if (newTheme === 'dark') {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        };
+
+        // Apply Saved Theme on Load
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Toast Notification
+        window.showToast = function (title, message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast`;
+            toast.style.borderLeftColor = type === 'success' ? 'var(--success)' : 'var(--danger)';
+            toast.innerHTML = `
+            <div>
+                <i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}" 
+                   style="color: ${type === 'success' ? 'var(--success)' : 'var(--danger)'}; font-size: 1.2rem;"></i>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 2px; font-size: 0.95rem;">${title}</h4>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">${message}</p>
+            </div>
+        `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slideInRight 0.4s reverse forwards';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        };
+
+        // Helper: Load Settings into Input Fields
