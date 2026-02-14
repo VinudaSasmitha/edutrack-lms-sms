@@ -111,4 +111,45 @@
                     }
                 }, { merge: true });
 
-             
+                showToast("Success", `${section.charAt(0).toUpperCase() + section.slice(1)} settings saved!`, "success");
+            } catch (error) {
+                console.error("Save error:", error);
+                showToast("Error", "Failed to save settings.", "error");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        };
+
+        // --- PROFILE UPDATE ---
+        window.updateProfile = async function (event) {
+            event.preventDefault();
+
+            // ✅ STEP 2: Write Guard
+            if (!auth.currentUser) {
+                showToast("Login required", "Session expired", "error");
+                return;
+            }
+
+            const newName = document.getElementById('profileNameInput').value;
+
+            try {
+                // Update Auth Profile
+                await updateProfile(auth.currentUser, { displayName: newName });
+
+                // Update Firestore (✅ STEP 3: setDoc merge)
+                await setDoc(doc(db, "users", auth.currentUser.uid), {
+                    name: newName
+                }, { merge: true });
+
+                // Update UI immediately
+                document.getElementById('adminNameDisplay').innerText = newName;
+                document.getElementById('profileNameHead').innerText = newName;
+                document.getElementById('profileAvatar').innerText = newName.charAt(0).toUpperCase();
+
+                showToast("Profile Updated", "Your details have been saved.", "success");
+            } catch (error) {
+                console.error(error);
+                showToast("Error", error.message, "error");
+            }
+        };
