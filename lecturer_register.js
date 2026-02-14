@@ -107,3 +107,25 @@ import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.
 
                 const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, password);
                 const user = userCredential.user;
+
+                // 3. Upload Files
+                loaderText.innerText = "Uploading Files...";
+                const photoFile = document.getElementById('photo').files[0];
+                const cvFile = document.getElementById('cv').files[0];
+
+                let photoUrl = "";
+                let cvUrl = "";
+
+                if (photoFile) {
+                    const photoRef = ref(storage, `teachers/${teacherId}/profile.jpg`);
+                    await uploadBytes(photoRef, photoFile);
+                    photoUrl = await getDownloadURL(photoRef);
+                }
+
+                if (cvFile) {
+                    const cvRef = ref(storage, `teachers/${teacherId}/cv.pdf`);
+                    await uploadBytes(cvRef, cvFile);
+                    cvUrl = await getDownloadURL(cvRef);
+                }
+
+                // 4. Save to Database
