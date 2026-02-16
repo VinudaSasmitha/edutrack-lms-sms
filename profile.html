@@ -1,11 +1,53 @@
-git <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="student.css">
+    <title>My Profile</title>
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:Arial,Helvetica,sans-serif;background:#f5f7fb;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+        .card{background:#fff;width:100%;max-width:820px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.08);padding:28px}
+        .card h2{font-size:26px;margin-bottom:18px;color:#111}
+        .row{display:flex;justify-content:space-between;align-items:center;padding:14px 10px;border-bottom:1px solid #eee}
+        .row:last-child{border-bottom:none}
+        .label{color:#555;font-weight:600}
+        .value{color:#0b63d6;font-weight:600}
+        .actions{display:flex;justify-content:flex-end;margin-top:18px;gap:8px}
+        .btn{padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
+        .btn-primary{background:#0b63d6;color:#fff}
+        .btn-secondary{background:#eef2ff;color:#0b63d6}
+        @media(max-width:600px){.row{flex-direction:column;align-items:flex-start;gap:8px}}
+    </style>
 </head>
 <body>
-    <h1>under construction</h1>
+    <div class="card">
+        <h2>👤 My Profile</h2>
+
+        <div class="row"><div class="label">User ID</div><div class="value" id="userId">-</div></div>
+        <div class="row"><div class="label">Admission No</div><div class="value" id="admNo">-</div></div>
+        <div class="row"><div class="label">Full Name</div><div class="value" id="fullName">-</div></div>
+        <div class="row"><div class="label">Email</div><div class="value" id="email">-</div></div>
+        <div class="row"><div class="label">Mobile</div><div class="value" id="mobile">-</div></div>
+        <div class="row"><div class="label">Course</div><div class="value" id="course">-</div></div>
+        <div class="row"><div class="label">Intake</div><div class="value" id="intake">-</div></div>
+        <div class="row"><div class="label">Payment Status</div><div class="value" id="status">-</div></div>
+
+        <div class="actions">
+            <button class="btn btn-secondary" id="backBtn">← Dashboard</button>
+            <button class="btn btn-primary" id="logoutBtn">Log out</button>
+        </div>
+    </div>
+
+    <script type="module" src="profile.js"></script>
+    <script>
+        document.getElementById('logoutBtn').addEventListener('click', ()=>{
+            localStorage.removeItem('loggedInUserId');
+            window.location.href = 'index.html';
+        });
+        document.getElementById('backBtn').addEventListener('click', ()=>{
+            window.location.href = 'student-dashboard.html';
+        });
+    </script>
 </body>
 </html>

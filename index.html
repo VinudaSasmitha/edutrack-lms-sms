@@ -362,13 +362,13 @@
     </div>
 
     <script type="module">
+        // Support both manual UserID login and Google Sign-In
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, query, where, getDocs, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // --- Configuration ---
         const firebaseConfig = {
-            apiKey: "AIzaSyAMRV4fGPR7XobJjUd27a5F9cK3w8IBbAI",
+            apiKey: "AIzaSyAMRV4fGPR7XobJjUd27a5F9c3w8IBbAI",
             authDomain: "edu-lms-e2f94.firebaseapp.com",
             projectId: "edu-lms-e2f94",
             storageBucket: "edu-lms-e2f94.firebasestorage.app",
@@ -376,14 +376,13 @@
             appId: "1:1023275038162:web:d746ff3b11ed64427c440b"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- DOM Elements ---
+        
         const ui = {
-            email: document.getElementById("email"),
+            email: document.getElementById("email"), // used as User ID input for manual login
             password: document.getElementById("password"),
             loginBtn: document.getElementById("loginBtn"),
             googleBtn: document.getElementById("googleBtn"),
@@ -396,164 +395,122 @@
 
         let isSubmitting = false;
 
-        // --- Helper: Toggle Loading State ---
         const setLoading = (isLoading) => {
             if (isLoading) {
                 ui.loader.classList.add('active');
                 ui.loginBtn.disabled = true;
-                ui.googleBtn.disabled = true;
+                if (ui.googleBtn) ui.googleBtn.disabled = true;
                 ui.loginBtn.innerText = "Authenticating...";
             } else {
                 ui.loader.classList.remove('active');
                 ui.loginBtn.disabled = false;
-                ui.googleBtn.disabled = false;
+                if (ui.googleBtn) ui.googleBtn.disabled = false;
                 ui.loginBtn.innerText = "Log In";
             }
         };
 
-        // --- Helper: Display Error with Animation ---
         const displayError = (message) => {
             ui.errorMsg.innerText = message;
             ui.loginCard.classList.remove("shake");
-            void ui.loginCard.offsetWidth; // Trigger reflow to restart animation
+            void ui.loginCard.offsetWidth;
             ui.loginCard.classList.add("shake");
         };
 
-        // --- Helper: Toggle Password Visibility ---
         const togglePassword = () => {
             const type = ui.password.getAttribute("type") === "password" ? "text" : "password";
             ui.password.setAttribute("type", type);
             ui.eyeIcon.style.opacity = type === "text" ? "0.5" : "1";
         };
 
-        // --- Core Logic: Check Role & Redirect ---
-        const checkUserRoleAndRedirect = async (user) => {
-            try {
-                // 1. Check 'users' collection (Students & Admins)
-                let docRef = doc(db, "users", user.uid);
-                let docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    const role = docSnap.data().role;
-                    if (role === "admin") {
-                        window.location.href = "admin-home.html";
-                    } else {
-                        window.location.href = "student-dashboard.html";
-                    }
-                    return;
-                }
-
-                // 2. Check 'teachers' collection
-                docRef = doc(db, "teachers", user.uid);
-                docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    window.location.href = "teacher-dashboard.html";
-                    return;
-                }
-
-                // 3. User authenticated but no profile found
-                setLoading(false);
-                displayError("Account exists but no profile found. Contact Admin.");
-                isSubmitting = false;
-
-            } catch (error) {
-                console.error("Database Error:", error);
-                setLoading(false);
-                displayError("System error. Please try again.");
-                isSubmitting = false;
-            }
-        };
-
-        // --- Login Handler (Email/Password) ---
+        // Manual UserID login
         const handleLogin = async () => {
             if (isSubmitting) return;
 
-            const email = ui.email.value.trim();
+            // use email (lowercased) as document id
+            const userId = ui.email.value.trim().toLowerCase();
             const password = ui.password.value;
 
             ui.errorMsg.innerText = "";
 
-            if (!email || !password) {
-                displayError("Please enter both email and password.");
+            if (!userId || !password) {
+                displayError("Please enter both User ID and password.");
                 return;
             }
 
             isSubmitting = true;
             setLoading(true);
 
+            const timeout = setTimeout(()=>{ setLoading(false); isSubmitting=false; displayError('Request timeout'); },30000);
+
             try {
-                // Set persistence so user stays logged in even after refresh
-                await setPersistence(auth, browserLocalPersistence);
+                const docRef = doc(db, "students", userId);
+                const snap = await getDoc(docRef);
+                if (!snap.exists()) {
+                    clearTimeout(timeout); setLoading(false); isSubmitting=false; displayError('User ID not found'); return;
+                }
 
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                await checkUserRoleAndRedirect(userCredential.user);
+                const data = snap.data();
+                if (data.password !== password) {
+                    clearTimeout(timeout); setLoading(false); isSubmitting=false; displayError('Incorrect password'); return;
+                }
 
-            } catch (error) {
-                console.error("Login Error:", error.code);
+                clearTimeout(timeout);
+                localStorage.setItem('loggedInUserId', userId);
+                setLoading(false); isSubmitting=false; window.location.href = 'student-dashboard.html';
 
-                // Map Firebase errors to user-friendly messages
-                const errorMap = {
-                    'auth/invalid-credential': 'Invalid email or password.',
-                    'auth/user-not-found': 'No account found with this email.',
-                    'auth/wrong-password': 'Incorrect password.',
-                    'auth/too-many-requests': 'Too many failed attempts. Please try again later.'
-                };
-
-                displayError(errorMap[error.code] || "Login failed. Check your connection.");
-                setLoading(false);
-                isSubmitting = false;
+            } catch (err) {
+                console.error(err); clearTimeout(timeout); setLoading(false); isSubmitting=false; displayError('System error. Check console.');
             }
         };
 
-        // --- Google Login Handler ---
+        // Google Sign-In handler
         const handleGoogleLogin = async () => {
             if (isSubmitting) return;
-
-            const provider = new GoogleAuthProvider();
-            isSubmitting = true;
-            setLoading(true);
+            isSubmitting = true; setLoading(true);
 
             try {
                 await setPersistence(auth, browserLocalPersistence);
+                const provider = new GoogleAuthProvider();
                 const result = await signInWithPopup(auth, provider);
                 const user = result.user;
 
-                // Check if user exists, if not create Student profile
-                const docRef = doc(db, "users", user.uid);
-                const docSnap = await getDoc(docRef);
+                // Try to find existing student by email
+                // Look for a student document keyed by the user's email (lowercase)
+                const emailKey = (user.email || '').trim().toLowerCase();
+                if (emailKey) {
+                    const existingDoc = await getDoc(doc(db, 'students', emailKey));
+                    if (existingDoc.exists()) {
+                        localStorage.setItem('loggedInUserId', emailKey);
+                        setLoading(false); isSubmitting=false; window.location.href = 'student-dashboard.html';
+                        return;
+                    }
 
-                if (!docSnap.exists()) {
-                    await setDoc(docRef, {
-                        email: user.email,
-                        role: "student",
-                        createdAt: serverTimestamp(),
-                        method: "google"
+                    // Not found - create minimal student document using email as ID
+                    const newDoc = doc(db, 'students', emailKey);
+                    await setDoc(newDoc, {
+                        userId: emailKey,
+                        contact: { email: emailKey },
+                        personal: { fullName: user.displayName || '' },
+                        meta: { role: 'student', enrolledAt: serverTimestamp(), status: 'Active' }
                     });
-                }
 
-                await checkUserRoleAndRedirect(user);
+                    localStorage.setItem('loggedInUserId', emailKey);
+                    setLoading(false); isSubmitting=false; window.location.href = 'student-dashboard.html';
+                    return;
+                }
+                setLoading(false); isSubmitting=false; window.location.href = 'student-dashboard.html';
 
             } catch (error) {
-                console.error("Google Auth Error:", error);
-                setLoading(false);
-                isSubmitting = false;
-                displayError("Google Sign-In failed.");
+                console.error('Google sign-in error:', error);
+                setLoading(false); isSubmitting=false; displayError('Google Sign-In failed');
             }
         };
 
-        // --- Event Listeners ---
-        document.addEventListener("DOMContentLoaded", () => {
-            ui.toggleBtn.addEventListener("click", togglePassword);
-            ui.loginBtn.addEventListener("click", handleLogin);
-            ui.googleBtn.addEventListener("click", handleGoogleLogin);
-
-            // Allow "Enter" key to submit
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && (document.activeElement === ui.email || document.activeElement === ui.password)) {
-                    handleLogin();
-                }
-            });
+        document.addEventListener('DOMContentLoaded', ()=>{
+            if (ui.toggleBtn) ui.toggleBtn.addEventListener('click', togglePassword);
+            ui.loginBtn.addEventListener('click', handleLogin);
+            if (ui.googleBtn) { ui.googleBtn.style.display='flex'; ui.googleBtn.addEventListener('click', handleGoogleLogin); }
+            document.addEventListener('keydown',(e)=>{ if(e.key==='Enter' && (document.activeElement===ui.email||document.activeElement===ui.password)) handleLogin(); });
         });
     </script>
 </body>

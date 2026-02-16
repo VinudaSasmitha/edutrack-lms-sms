@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Official Student Enrollment | Campus LMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="student_enroll.css">
+</head>
+
+<body>
+
+    <div class="overlay" id="loader">
+        <div class="spinner"></div>
+        <h3 style="color: var(--primary);">Processing Enrollment...</h3>
+        <p style="color: #64748b;">Creating Login Account & Saving Records</p>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1><i class="fas fa-university"></i> OFFICIAL STUDENT ENROLLMENT</h1>
+                <span style="font-size: 12px; opacity: 0.8;">Admin Portal | Academic Year 2026</span>
+            </div>
+            <a href="index.html" class="back-link">← Return to Dashboard</a>
+        </div>
+
+        <form id="enrollmentForm">
+
+            <div class="course-selection-box">
+                <div class="form-group">
+                    <label style="color: var(--accent); font-size: 15px;">Select Degree Program (Crucial Step)</label>
+                    <select id="courseSelect" required style="border: 2px solid var(--accent); font-weight: 600;">
+                        <option value="" disabled selected>-- Choose a Degree --</option>
+
+                        <optgroup label="School of Computing (IT)">
+                            <option value="Software Engineering" data-prefix="I">BEng (Hons) Software Engineering
+                            </option>
+                            <option value="Computer Science" data-prefix="I">BSc (Hons) Computer Science</option>
+                            <option value="Cyber Security" data-prefix="I">BSc (Hons) Cyber Security</option>
+                            <option value="Data Science" data-prefix="I">BSc (Hons) Data Science</option>
+                        </optgroup>
+
+                        <optgroup label="School of Business (Management)">
+                            <option value="Business Management" data-prefix="B">BA (Hons) Business Management</option>
+                            <option value="Marketing" data-prefix="B">BA (Hons) Marketing</option>
+                            <option value="Accounting" data-prefix="B">BSc (Hons) Accounting & Finance</option>
+                            <option value="Logistics" data-prefix="B">BSc (Hons) Logistics Management</option>
+                        </optgroup>
+                    </select>
+                    <p style="margin: 8px 0 0 0; font-size: 12px; color: #64748b;">
+                        <i class="fas fa-info-circle"></i> Selecting an IT degree starts Admission No with <b>"I"</b>.
+                        Business starts with <b>"B"</b>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="section-header"><i class="fas fa-user-circle"></i> Personal Information</div>
+            <div class="grid-3">
+                <div class="form-group"><label>Full Name</label><input type="text" id="fullName" required></div>
+                <div class="form-group"><label>Name with Initials</label><input type="text" id="initials" required>
+                </div>
+                <div class="form-group"><label>NIC / Passport</label><input type="text" id="nic"
+                        placeholder="Used for Duplicate Check" required></div>
+                <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" required></div>
+                <div class="form-group"><label>Gender</label><select id="gender">
+                        <option>Male</option>
+                        <option>Female</option>
+                    </select></div>
+                <div class="form-group"><label>Nationality</label><input type="text" id="nationality"
+                        value="Sri Lankan"></div>
+            </div>
+
+            <div class="section-header"><i class="fas fa-address-book"></i> Contact Details</div>
+            <div class="grid-3">
+                <div class="form-group"><label>Mobile Number</label><input type="tel" id="mobile" required></div>
+                <div class="form-group"><label>Email Address (Login Email)</label><input type="email" id="email"
+                        required></div>
+                <div class="form-group"><label>Home Address</label><input type="text" id="address" required></div>
+            </div>
+
+            <div class="section-header"><i class="fas fa-graduation-cap"></i> Enrollment Details</div>
+            <div class="grid-3">
+                <div class="form-group"><label>Intake</label>
+                    <select id="intake">
+                        <option>February Intake</option>
+                        <option>September Intake</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Study Mode</label>
+                    <select id="mode">
+                        <option>Full-Time</option>
+                        <option>Part-Time / Weekend</option>
+                        <option>Online</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Admission No (Auto-Generated)</label>
+                    <input type="text" value="System Will Generate" disabled
+                        style="background: #f1f5f9; font-weight: bold; color: var(--accent);">
+                </div>
+
+                <div class="form-group">
+                    <label style="color: var(--danger);">Temporary Password (Login)</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="tempPassword" value="Student@2026"
+                            style="font-weight: bold; color: var(--danger); border: 2px solid var(--danger);">
+                        <button type="button" class="btn btn-secondary" onclick="generateStudentPass()"
+                            style="width: auto; padding: 10px 15px;">
+                            <i class="fas fa-sync"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-header"><i class="fas fa-file-invoice-dollar"></i> Payments & Finance</div>
+            <div class="grid-3 finance-box">
+                <div class="form-group"><label>Total Course Fee (LKR)</label><input type="number" id="feeTotal"
+                        value="0"></div>
+                <div class="form-group"><label>Discount Amount</label><input type="number" id="feeDiscount" value="0">
+                </div>
+                <div class="form-group"><label>Initial Payment</label><input type="number" id="feePaid" value="0"></div>
+
+                <div class="form-group">
+                    <label>Balance To Pay</label>
+                    <input type="text" id="feeBalance" readonly style="font-weight: bold; color: var(--danger);">
+                </div>
+                <div class="form-group"><label>Payment Method</label>
+                    <select id="payMethod">
+                        <option>Cash</option>
+                        <option>Bank Transfer</option>
+                        <option>Card Online</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Status</label>
+                    <div id="statusText" style="font-weight: bold; font-size: 14px; margin-top: 10px; color: #ca8a04;">
+                        PENDING</div>
+                </div>
+            </div>
+
+            <div class="section-header"><i class="fas fa-cloud-upload-alt"></i> Documents</div>
+            <div class="grid-2">
+                <div class="form-group"><label>Student Photo (JPG)</label><input type="file" id="filePhoto"
+                        accept="image/*" required></div>
+                <div class="form-group"><label>NIC / Passport Copy (PDF)</label><input type="file" id="fileNIC"
+                        accept=".pdf, image/*" required></div>
+                <div class="form-group"><label>Educational Certificates (PDF)</label><input type="file" id="fileEdu"
+                        accept=".pdf"></div>
+            </div>
+
+            <div class="actions">
+                <button type="button" class="btn btn-secondary" onclick="location.reload()">Reset Form</button>
+                <button type="submit" class="btn btn-primary">CONFIRM & ENROLL STUDENT</button>
+            </div>
+
+        </form>
+    </div>
+
+    <script type="module" src="student_enroll.js"></script>
+</body>
+
+</html>
