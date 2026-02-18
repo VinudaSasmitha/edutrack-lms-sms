@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Grades | EduTrack LMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #06b6d4;
+            --bg-color: #f8fafc;
+            --white: #ffffff;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .page-header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .card-header i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .card-header h2 {
+            font-size: 1.3rem;
+            color: var(--text-dark);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .form-group label span {
+            color: var(--danger);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-control:read-only {
+            background: #f1f5f9;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        select.form-control {
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--border);
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            border-left: 4px solid var(--info);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .info-box i {
+            color: var(--info);
+            margin-right: 8px;
+        }
+
+        .info-box p {
+            color: var(--text-dark);
+            font-size: 0.9rem;
+        }
+
+        /* Toast Notification */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .toast {
+            padding: 16px 24px;
+            border-radius: 10px;
+            color: white;
+            margin-bottom: 10px;
+            animation: slideIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Loading Overlay */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+        }
+
+        .overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .overlay h3 {
+            margin-top: 15px;
+            color: var(--text-dark);
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="overlay" id="loader">
+        <div class="spinner"></div>
+        <h3>Saving Grade...</h3>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-clipboard-check"></i> Add Student Grades</h1>
+            <p>Record and manage student academic performance</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-user-graduate"></i>
+                <h2>Student Information</h2>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Student Email <span>*</span></label>
+                    <input type="email" id="studentEmail" class="form-control" placeholder="student@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Student Name</label>
+                    <input type="text" id="studentName" class="form-control" placeholder="Auto-filled from email" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Course</label>
+                    <input type="text" id="course" class="form-control" placeholder="Auto-filled from student details" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Academic Year <span>*</span></label>
+                    <select id="academicYear" class="form-control" required>
+                        <option value="">Select Year</option>
+                        <option value="2025/2026">2025/2026</option>
+                        <option value="2024/2025">2024/2025</option>
+                        <option value="2023/2024">2023/2024</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Semester <span>*</span></label>
+                    <select id="semester" class="form-control" required>
+                        <option value="">Select Semester</option>
+                        <option value="Semester 1">Semester 1</option>
+                        <option value="Semester 2">Semester 2</option>
+                        <option value="Semester 3">Semester 3</option>
+                        <option value="Semester 4">Semester 4</option>
+                        <option value="Semester 5">Semester 5</option>
+                        <option value="Semester 6">Semester 6</option>
+                        <option value="Semester 7">Semester 7</option>
+                        <option value="Semester 8">Semester 8</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Subject <span>*</span></label>
+                    <input type="text" id="subject" class="form-control" placeholder="e.g., Data Structures" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-chart-line"></i>
+                <h2>Grade Details</h2>
+            </div>
+
+            <div class="info-box">
+                <p><i class="fas fa-info-circle"></i> Enter the marks out of 100. A minimum of 40 marks is required to pass.</p>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Marks Obtained <span>*</span></label>
+                    <input type="number" id="marks" class="form-control" placeholder="Enter marks (0-100)" min="0" max="100" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Result Status</label>
+                    <select id="gradeStatus" class="form-control" required>
+                        <option value="">Select Status</option>
+                        <option value="Pass">Pass</option>
+                        <option value="Fail">Fail</option>
+                    </select>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Additional Notes</label>
+                    <textarea id="notes" class="form-control" rows="3" placeholder="Optional comments about the student's performance..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+                <button type="submit" class="btn btn-primary" onclick="saveGrade()">
+                    <i class="fas fa-save"></i> Save Grade
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="addGrade.js"></script>
+</body>
+
+</html>
