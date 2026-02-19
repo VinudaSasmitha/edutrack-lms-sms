@@ -1,0 +1,116 @@
+:root {
+    --sidebar-width: 260px;
+    --sidebar-bg: #10205e;
+    --sidebar-text: #ffffff;
+    --sidebar-hover: rgba(255, 255, 255, 0.1);
+    --primary-color: #2563eb;
+    --text-muted: rgba(255, 255, 255, 0.5);
+}
+
+/* Sidebar Container */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    transition: 0.3s;
+    overflow-y: auto;
+}
+
+/* Logo Section */
+.sidebar .logo-section {
+    padding: 25px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--sidebar-text);
+}
+
+/* Menu Section */
+.sidebar .menu {
+    flex: 1;
+    padding: 20px 0;
+}
+
+.sidebar .menu-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 25px;
+    color: rgba(255, 255, 255, 0.8);
+    transition: 0.3s;
+    cursor: pointer;
+    border-left: 4px solid transparent;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.sidebar .menu-item:hover,
+.sidebar .menu-item.active {
+    background-color: var(--sidebar-hover);
+    color: var(--sidebar-text);
+    border-left-color: var(--primary-color);
+}
+
+.sidebar .menu-item i {
+    width: 30px;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+/* Logout Section */
+.sidebar .logout-section {
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar .btn-logout {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--sidebar-text);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.sidebar .btn-logout:hover {
+    background: #ef4444;
+}
+
+/* Body Adjustment Class */
+body.with-sidebar {
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+}
+
+/* Mobile Responsiveness (Basic) */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    
+    body.with-sidebar {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+}

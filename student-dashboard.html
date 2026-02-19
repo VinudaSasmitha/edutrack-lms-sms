@@ -22,31 +22,42 @@
 
         <div class="menu">
 
-            <a href="myCourse.html" onclick="showToast('Courses', 'Module is loading...', 'success')" target="content_frame" class="menu-item active" onclick="activateMenu(this)">
+            <a href="myCourse.html"
+                onclick="showToast('Courses', 'Module is loading...', 'success'); activateMenu(this)"
+                target="content_frame" class="menu-item active">
                 <i class="fa-solid fa-chart-pie"></i>
                 <span>My Course</span>
             </a>
 
-            <a href="grades.html" onclick="showToast('Grades', 'Grades is loading...', 'success')" target="content_frame" class="menu-item" onclick="activateMenu(this)">
+            <a href="grades.html" onclick="showToast('Grades', 'Grades is loading...', 'success'); activateMenu(this)"
+                target="content_frame" class="menu-item">
                 <i class="fa-solid fa-users"></i>
                 <span>Grades</span>
             </a>
 
-            <a href="calendar.html" class="menu-item" onclick="showToast('calendar', 'calendar is loading...', 'success')" target="content_frame">
+            <a href="calendar.html" class="menu-item"
+                onclick="showToast('calendar', 'calendar is loading...', 'success'); activateMenu(this)"
+                target="content_frame">
                 <i class="fa-solid fa-calendar-days"></i>
                 <span>calendar</span>
             </a>
 
-            <a href="attendance.html" class="menu-item" onclick="showToast('Attendance', 'Attendance calendar...', 'success')" target="content_frame">
-                <i class="fa-solid fa-calendar-days"></i>
+            <a href="attendance.html" class="menu-item"
+                onclick="showToast('Attendance', 'Attendance calendar...', 'success'); activateMenu(this)"
+                target="content_frame">
+                <i class="fa-solid fa-clipboard-user"></i>
                 <span>Attendance</span>
             </a>
-            <a href="payment.html" class="menu-item" onclick="showToast('Payment Gateway', 'Connecting to bank...', 'success')" target="content_frame">
+            <a href="payment.html" class="menu-item"
+                onclick="showToast('Payment Gateway', 'Connecting to bank...', 'success'); activateMenu(this)"
+                target="content_frame">
                 <i class="fa-solid fa-credit-card"></i>
                 <span>Payments</span>
             </a>
 
-            <a href="profile.html" class="menu-item" onclick="showToast('profile', 'profile to bank...', 'success')" target="content_frame">
+            <a href="profile.html" class="menu-item"
+                onclick="showToast('profile', 'profile to bank...', 'success'); activateMenu(this)"
+                target="content_frame">
                 <i class="fa-solid fa-user"></i>
                 <span>profile</span>
             </a>
@@ -60,6 +71,10 @@
             </button>
         </div>
     </nav>
+
+    <div class="content-area">
+        <iframe name="content_frame" id="content_frame" src="myCourse.html" frameborder="0"></iframe>
+    </div>
 
 
     <div id="toast-container"></div>
