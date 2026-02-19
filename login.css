@@ -200,27 +200,7 @@ body {
     transform: translateY(-1px);
 }
 
-.btn-google {
-    width: 100%;
-    padding: 12px;
-    margin-top: 15px;
-    background-color: white;
-    border: 2px solid #e5e7eb;
-    color: var(--text-main);
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    transition: 0.3s;
-}
 
-.btn-google:hover {
-    background-color: #f9fafb;
-    border-color: #d1d5db;
-}
 
 /* Error Message Area */
 #errorMsg {

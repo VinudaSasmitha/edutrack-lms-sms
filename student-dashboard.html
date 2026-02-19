@@ -34,27 +34,6 @@
                 <i class="fa-solid fa-users"></i>
                 <span>Grades</span>
             </a>
-
-            <a href="calendar.html" class="menu-item"
-                onclick="showToast('calendar', 'calendar is loading...', 'success'); activateMenu(this)"
-                target="content_frame">
-                <i class="fa-solid fa-calendar-days"></i>
-                <span>calendar</span>
-            </a>
-
-            <a href="attendance.html" class="menu-item"
-                onclick="showToast('Attendance', 'Attendance calendar...', 'success'); activateMenu(this)"
-                target="content_frame">
-                <i class="fa-solid fa-clipboard-user"></i>
-                <span>Attendance</span>
-            </a>
-            <a href="payment.html" class="menu-item"
-                onclick="showToast('Payment Gateway', 'Connecting to bank...', 'success'); activateMenu(this)"
-                target="content_frame">
-                <i class="fa-solid fa-credit-card"></i>
-                <span>Payments</span>
-            </a>
-
             <a href="profile.html" class="menu-item"
                 onclick="showToast('profile', 'profile to bank...', 'success'); activateMenu(this)"
                 target="content_frame">
@@ -78,6 +57,50 @@
 
 
     <div id="toast-container"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAMRV4fGPR7XobJjUd27a5F9cK3w8IBbAI",
+            authDomain: "edu-lms-e2f94.firebaseapp.com",
+            projectId: "edu-lms-e2f94",
+            storageBucket: "edu-lms-e2f94.firebasestorage.app",
+            messagingSenderId: "1023275038162",
+            appId: "1:1023275038162:web:d746ff3b11ed64427c440b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Security Check
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                // Not logged in
+                window.location.href = "index.html";
+            } else {
+                // Logged in - verify session data matches
+                const storedEmail = localStorage.getItem('loggedInUserId');
+                if (storedEmail !== user.email) {
+                    localStorage.setItem('loggedInUserId', user.email);
+                }
+            }
+        });
+
+        // Expose logout to global scope for the button
+        window.logout = () => {
+            if (confirm("Are you sure you want to log out?")) {
+                signOut(auth).then(() => {
+                    localStorage.removeItem('loggedInUserId');
+                    localStorage.removeItem('userRole');
+                    window.location.href = "index.html";
+                }).catch((error) => {
+                    console.error("Logout Error:", error);
+                });
+            }
+        };
+    </script>
 
     <script src="dashboard.js"></script>
 

@@ -29,10 +29,10 @@ window.showToast = (message, type = "success") => {
 };
 
 // Auto-update Pass/Fail status when marks change
-document.getElementById("marks").addEventListener("input", function() {
+document.getElementById("marks").addEventListener("input", function () {
     const marks = parseFloat(this.value);
     const statusSelect = document.getElementById("gradeStatus");
-    
+
     if (isNaN(marks) || marks < 0) {
         statusSelect.value = "";
     } else if (marks > 100) {
@@ -44,18 +44,18 @@ document.getElementById("marks").addEventListener("input", function() {
 });
 
 // Look up student by email and auto-fill course
-document.getElementById("studentEmail").addEventListener("blur", async function() {
+document.getElementById("studentEmail").addEventListener("blur", async function () {
     const email = this.value.trim().toLowerCase();
     const nameInput = document.getElementById("studentName");
     const courseInput = document.getElementById("course");
-    
+
     if (!email) return;
-    
+
     try {
         // Check in students collection first
         const studentRef = doc(db, "students", email);
         const studentSnap = await getDoc(studentRef);
-        
+
         if (studentSnap.exists()) {
             const studentData = studentSnap.data();
             nameInput.value = studentData.personal?.fullName || studentData.personal?.initials || "";
@@ -65,7 +65,7 @@ document.getElementById("studentEmail").addEventListener("blur", async function(
             // Also check in users collection
             const userRef = doc(db, "users", email);
             const userSnap = await getDoc(userRef);
-            
+
             if (userSnap.exists()) {
                 const userData = userSnap.data();
                 nameInput.value = userData.name || "";
@@ -82,9 +82,9 @@ document.getElementById("studentEmail").addEventListener("blur", async function(
 });
 
 // Save grade to Firebase
-window.saveGrade = async function() {
+window.saveGrade = async function () {
     const loader = document.getElementById("loader");
-    
+
     // Get form values
     const studentEmail = document.getElementById("studentEmail").value.trim().toLowerCase();
     const studentName = document.getElementById("studentName").value.trim();
@@ -127,7 +127,7 @@ window.saveGrade = async function() {
     try {
         // Create unique document ID
         const gradeId = `${studentEmail}_${academicYear}_${semester}_${subject}`.replace(/[^a-zA-Z0-9]/g, "_");
-        
+
         // Prepare grade data
         const gradeData = {
             studentEmail: studentEmail,
@@ -143,12 +143,14 @@ window.saveGrade = async function() {
             createdBy: "admin"
         };
 
-        // Save to Firestore
-        await setDoc(doc(db, "grades", gradeId), gradeData);
+        // Save to Firestore subcollection (User Requested Structure)
+        // Path: grades/{studentEmail}/records/{gradeId}
+        const gradeRef = doc(db, "grades", studentEmail, "records", gradeId);
+        await setDoc(gradeRef, gradeData);
 
         loader.classList.remove("active");
         showToast("Grade saved successfully!", "success");
-        
+
         // Reset form after short delay
         setTimeout(() => {
             resetForm();
@@ -162,7 +164,7 @@ window.saveGrade = async function() {
 };
 
 // Reset form
-window.resetForm = function() {
+window.resetForm = function () {
     document.getElementById("studentEmail").value = "";
     document.getElementById("studentName").value = "";
     document.getElementById("course").value = "";
